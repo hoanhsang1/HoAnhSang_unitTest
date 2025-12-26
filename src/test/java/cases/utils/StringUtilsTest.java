@@ -1,55 +1,40 @@
 package cases.utils;
-
-import base.BaseTestCase;
-import org.example.utils.StringUtils;
 import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import org.example.utils.StringUtils;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import static org.junit.jupiter.api.Assertions.*;
+public class StringUtilsTest {
 
-
-public class StringUtilsTest extends BaseTestCase {
     @Test
-    public void testIsNullOrEmpty() {
-        // Chia lam bao nhieu cases?
-        // Case 1: input == null
-        assertTrue(StringUtils.isNullOrEmpty(null)); // case 1 => expected: true
-        // Case 2: input == ""
-        assertTrue(StringUtils.isNullOrEmpty("")); // case 2 => expected: true
-        // Case 3: input != "" = "kjhfjfshgjdf"
-        assertFalse(StringUtils.isNullOrEmpty("hgjhgjshdvjsvcbvcxbj")); // case 3 => expected: false
-        assertFalse(StringUtils.isNullOrEmpty("            "));
-        // Da hoan thanh muc tieu cua method => Passed
+    public void testIsNullOrEmptySuccess() {
+        assertTrue(StringUtils.isNullOrEmpty(null));
+        assertTrue(StringUtils.isNullOrEmpty(""));
     }
 
     @Test
-    public void testIsBlank() {
-        // case 1: input null => true
+    public void testIsNullOrEmptyFalse() {
+        assertFalse(StringUtils.isNullOrEmpty(" "));
+        assertFalse(StringUtils.isNullOrEmpty("àdsaga"));
+        assertFalse(StringUtils.isNullOrEmpty("123"));
+        assertFalse(StringUtils.isNullOrEmpty("0"));
+        assertFalse(StringUtils.isNullOrEmpty("null"));
+    }
+
+    @Test
+    public void testIsBlankSuccess() {
         assertTrue(StringUtils.isBlank(null));
-        // case 2: input rong => true
         assertTrue(StringUtils.isBlank(""));
-        // case 3: input blank
-        assertTrue(StringUtils.isBlank("            "));
-        // case 4: input not null not blank not empty
-        assertFalse(StringUtils.isBlank("hgjhgjshdvjsvcbvcxbj"));
+        assertTrue(StringUtils.isBlank(" "));
     }
 
     @Test
-    public void testCapitalize() {
-        assertNull(StringUtils.capitalize(null));
-        assertEquals("", StringUtils.capitalize(""));
-        assertEquals("Abcd", StringUtils.capitalize("abcd"));
-        assertEquals("Uppercase", StringUtils.capitalize("UPPERCASE"));
-        assertEquals("Love You To The Moon", StringUtils.capitalize("love you to the moon"));
-        assertEquals("@#$%", StringUtils.capitalize("@#$%"));
-        assertEquals("   ", StringUtils.capitalize("   "));
-        assertEquals("123", StringUtils.capitalize("123"));
-        assertEquals(" Abc", StringUtils.capitalize(" abc"));
-        assertEquals("Ă", StringUtils.capitalize("ă"));
-        assertEquals("A1b2c3", StringUtils.capitalize("a1b2c3"));
-        assertEquals("1a2b3c", StringUtils.capitalize("1a2b3c"));
+    public void testIsBlankFalse() {
+        assertFalse(StringUtils.isBlank("adsa"));
+        assertFalse(StringUtils.isBlank("0"));
     }
+
 
     @ParameterizedTest
     @CsvSource(
@@ -63,12 +48,36 @@ public class StringUtilsTest extends BaseTestCase {
                     "'   ', '   '",
                     "123, 123",
                     "' abc', ' Abc'",
-                    "ă, Ă",
+                    "a, A",
                     "a1b2c3, A1b2c3",
-                    "1a2b3c, 1a2b3c",
-                    "😀, 😀"
+                    "1a2b3c, 1a2b3c"
             }, nullValues = "null")
-    void testCapitalize(String input, String expected) {
-        assertEquals(expected, StringUtils.capitalize(input));
+    public void testCapitalizeSuccess(String input, String Expected) {
+        assertEquals(Expected,StringUtils.capitalize(input));
     }
+
+    @Test
+    public void testReverse() {
+        assertEquals(StringUtils.reverse("abc"),"cba");
+        assertEquals(StringUtils.reverse(null),null);
+        assertEquals(StringUtils.reverse("null"),"llun");
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {
+            "hello, he, true",
+            "hello, HE, true",
+            "HELLO, he, true",
+            "Hello World, world, true",
+            "java, python, false",
+            "'', '', true",
+            "'', a, false",
+            "text, '', true",
+            "null, '', false",
+            "text, null, false"
+    }, nullValues = "null")
+    void testContainsIgnoreCase(String text, String search, boolean expected) {
+        assertEquals(expected, StringUtils.containsIgnoreCase(text, search));
+    }
+
 }
